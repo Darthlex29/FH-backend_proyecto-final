@@ -10,10 +10,10 @@ import { authRequired } from "../middlewares/validateToken.js";
 
 const router = Router();
 
-router.post("/", createCategory);
+router.post("/", authRequired, createCategory);
 router.get("/", getCategories);
-router.get("/:id", getCategoryById);
-router.put("/:id", updateCategory);
-router.delete("/:id", deleteCategory);
+router.get("/:id", authRequired, getCategoryById);
+router.put("/:id", authRequired, updateCategory);
+router.delete("/:id", authRequired, deleteCategory);
 
 export default router;

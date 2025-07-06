@@ -5,15 +5,18 @@ import {
   getNoteById,
   updateNote,
   deleteNote,
+  getFilteredNotes,
 } from "../controllers/note.controller.js";
 import { authRequired } from "../middlewares/validateToken.js";
 
 const router = Router();
 
-router.post("/", createNote);
+router.post("/", authRequired, createNote);
 router.get("/", getNotes);
-router.get("/:id", getNoteById);
-router.put("/:id", updateNote);
-router.delete("/:id", deleteNote);
+router.get("/:id", authRequired, getNoteById);
+router.put("/:id", authRequired, updateNote);
+router.delete("/:id", authRequired, deleteNote);
+router.get("/filter", authRequired, getFilteredNotes);
+
 
 export default router;

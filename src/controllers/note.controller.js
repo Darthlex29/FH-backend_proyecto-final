@@ -4,18 +4,29 @@ import {
   getNoteByIdService,
   updateNoteService,
   deleteNoteService,
+  getFilteredNotesService,
 } from "../services/note.service.js";
 
 // Crear nota
 export async function createNote(req, res) {
   try {
-    const note = await createNoteService(req.body);
+    const { title, content, isArchived, categories } = req.body;
+    const userId = req.user.id; // Obtenido del token
+
+    const note = await createNoteService({
+      title,
+      content,
+      isArchived,
+      userId,
+      categories,
+    });
+
     res.status(201).json(note);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  } catch (err) {
+    console.error("Error creating note:", err);
+    res.status(400).json({ error: err.message });
   }
 }
-
 // Obtener todas las notas
 export async function getNotes(req, res) {
   try {
@@ -53,5 +64,26 @@ export async function deleteNote(req, res) {
     res.json({ message: "Note deleted" });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+}
+
+export async function getFilteredNotes(req, res) {
+  try {
+    const userId = req.user.id;
+    const { categories, title, isArchived } = req.query;
+
+    const categoryNames = categories ? categories.split(",") : [];
+
+    const notes = await getFilteredNotesService({
+      userId,
+      categoryNames,
+      title,
+      isArchived: isArchived !== undefined ? isArchived === "true" : null,
+    });
+
+    res.json(notes);
+  } catch (error) {
+    console.error("Error getting filtered notes:", error);
+    res.status(500).json({ error: error.message });
   }
 }

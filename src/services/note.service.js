@@ -1,10 +1,41 @@
 import { Note } from "../models/note.model.js";
 import { Category } from "../models/category.model.js";
-import { Op } from "sequelize"; 
+import { Op } from "sequelize";
 
 // Crear una nota
+/*
 export async function createNoteService({ title, content, isArchived = false }) {
   return await Note.create({ title, content, isArchived });
+}
+*/
+
+export async function createNoteService({
+  title,
+  content,
+  isArchived = false,
+  userId,
+  categories = [],
+}) {
+  // 1. Crear la nota
+  const note = await Note.create({
+    title,
+    content,
+    isArchived,
+    userId,
+  });
+
+  // 2. Asociar categorías (por nombre)
+  if (categories.length > 0) {
+    const foundCategories = await Category.findAll({
+      where: {
+        name: categories,
+      },
+    });
+
+    await note.addCategories(foundCategories);
+  }
+
+  return note;
 }
 
 // Obtener todas las notas
