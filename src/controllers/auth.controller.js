@@ -8,7 +8,11 @@ export async function register(req, res) {
   try {
     const user = await createUserService(req.body);
     console.log("Token generated successfully controller:", user.token);
-    res.cookie("token", user.token);
+    res.cookie("token", user.token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: false
+    });
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
     console.error("Error in createUser:", err.message);
@@ -19,7 +23,11 @@ export async function register(req, res) {
 export async function login(req, res) {
   try {
     const result = await loginUserService(req.body);
-    res.cookie("token", result.token);
+    res.cookie("token", result.token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: false
+    });
     res.status(200).json({
       message: "Login successful",
       user: {
