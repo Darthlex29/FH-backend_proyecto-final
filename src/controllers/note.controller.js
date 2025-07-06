@@ -70,9 +70,11 @@ export async function deleteNote(req, res) {
 export async function getFilteredNotes(req, res) {
   try {
     const userId = req.user.id;
+    console.log("User ID from token:", userId);
     const { categories, title, isArchived } = req.query;
-
+    console.log("Query parameters:", { categories, title, isArchived });
     const categoryNames = categories ? categories.split(",") : [];
+    console.log("Parsed category names:", categoryNames);
 
     const notes = await getFilteredNotesService({
       userId,

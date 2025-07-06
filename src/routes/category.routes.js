@@ -17,3 +17,4 @@ router.put("/:id", authRequired, updateCategory);
 router.delete("/:id", authRequired, deleteCategory);
 
 export default router;
+          

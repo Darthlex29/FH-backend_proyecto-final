@@ -16,7 +16,7 @@ router.get("/", getNotes);
 router.get("/:id", authRequired, getNoteById);
 router.put("/:id", authRequired, updateNote);
 router.delete("/:id", authRequired, deleteNote);
-router.get("/filter", authRequired, getFilteredNotes);
+router.get("/user/all", authRequired, getFilteredNotes);
 
 
 export default router;
