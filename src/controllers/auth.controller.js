@@ -3,6 +3,9 @@ import {
   loginUserService,
   logoutService,
 } from "../services/auth.service.js";
+import jwt from "jsonwebtoken";
+import { SECRET } from "../config/config.js";
+import { getUserByIdService} from "../services/user.service.js";
 
 export async function register(req, res) {
   try {
@@ -52,10 +55,25 @@ export async function logout(req, res) {
 
 export async function profile(req, res) {
   try {
-    // Aquí podrías obtener el perfil del usuario desde la base de datos
-    // usando req.user.id si estás usando un middleware de autenticación.
     res.json({ message: "User profile" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+}
+
+export const verifyToken = async (req, res) => {
+  const {token}= req.cookies
+  if (!token) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const userFound = await getUserByIdService(decoded.id);
+    if (!userFound) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    return res.json({ userId: decoded.id, message: "Token is valid" });
+  });
 }
